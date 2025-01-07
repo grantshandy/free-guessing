@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fs::{self, File},
     path::PathBuf,
 };
@@ -20,6 +21,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let sql_db = Connection::open("../public/locations.sqlite")?;
 
+    let mut countries = HashSet::new();
+
     sql_db.execute_batch(
         "CREATE TABLE IF NOT EXISTS country_codes (
             country_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -33,16 +36,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )?;
 
     for file in files {
-        insert_parquet(&boundaries, file, &sql_db)?;
+        insert_parquet(&boundaries, &mut countries, file, &sql_db)?;
     }
 
     sql_db.cache_flush()?;
+
+    fs::write(
+        "../src/countries.json",
+        serde_json::to_string_pretty(&serde_json::json!({ "codes": countries }))?,
+    )?;
 
     Ok(())
 }
 
 fn insert_parquet(
     boundaries: &CountryBoundaries,
+    countries: &mut HashSet<String>,
     pq_file: PathBuf,
     conn: &Connection,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -53,11 +62,15 @@ fn insert_parquet(
         let latitude = row.get_string(2)?.parse::<f32>()?;
         let longitude = row.get_string(3)?.parse::<f32>()?;
 
-        let country_code = boundaries
+        let Some(country_code) = boundaries
             .ids(LatLon::new(latitude.into(), longitude.into())?)
             .into_iter()
             .last()
-            .unwrap_or("??");
+        else {
+            return Ok(());
+        };
+
+        countries.insert(country_code.to_string());
 
         let country_id: usize = conn
             .query_row(

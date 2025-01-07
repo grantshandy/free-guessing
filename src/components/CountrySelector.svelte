@@ -1,5 +1,5 @@
 <script lang="ts">
-    import countries from "./countries.json";
+    import countries from "../countries.json";
 
     let { countryCode = $bindable() }: { countryCode: string | null } = $props();
 
