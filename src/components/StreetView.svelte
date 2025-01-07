@@ -4,8 +4,8 @@
     let props: { coords: { lat: number; lng: number } } = $props();
 
     const loader = new Loader({
-        // don't get excited, this api key is from the documentation :)
-        apiKey: "AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg",
+        // very limited api key. don't get excited.
+        apiKey: "AIzaSyANexyY4yq-ink8zwgTnQxnVWlsq9EJgx0",
         version: "weekly",
     });
 
