@@ -28,6 +28,7 @@
     loadDatabase().then((f) => {
       getRandomLocation = f;
       loading = false;
+      newGuess();
     });
   });
 
@@ -45,13 +46,19 @@
 <main>
   <h2>Free Guessing</h2>
 
+  <p>
+    Guess the location of random street views across the world, inspired by <a
+      href="https://www.geoguessr.com/">geoguessr</a
+    >.
+  </p>
+
   {#if loading}
     <h3>Loading Database...</h3>
   {:else}
     <hr />
     <div>
       <CountrySelector bind:countryCode />
-      <button onclick={newGuess}>Random Location</button>
+      <button onclick={newGuess}>Next Location</button>
 
       <div style="float: right; display: flex;">
         {#if !resultScreen && target}
@@ -77,4 +84,9 @@
       <hr />
     {/if}
   {/if}
+
+  <p style="text-align: center;">
+    <a href="https://buymeacoffee.com/granthandy">Donate</a> &#183;
+    <a href="https://github.com/grantshandy/free-guessing">Source</a>
+  </p>
 </main>

@@ -18,26 +18,20 @@ export const loadDatabase = async (): Promise<GetRandomLocation> => {
     const db = new sql.Database(new Uint8Array(dbBytes));
 
     return (countryCode: string | null) => {
-        let res: SqlValue[];
-
-        if (countryCode) {
-            res = db.exec(`SELECT latlng
+        const sql = countryCode
+            ? `SELECT latlng
                 FROM locations
                 JOIN country_codes
                 ON locations.country_id = country_codes.country_id
                 WHERE country_codes.country_code = "${countryCode}"
                 ORDER BY RANDOM()
-                LIMIT 1`,
-            )[0].values[0];
-        } else {
-            res = db.exec(`SELECT latlng
+                LIMIT 1`
+            : `SELECT latlng
                 FROM locations
                 ORDER BY RANDOM()
-                LIMIT 1`,
-            )[0].values[0];
-        }
-        
-        let latlng = new DataView((res[0] as Uint8Array).buffer);
+                LIMIT 1`;
+
+        let latlng = new DataView((db.exec(sql)[0].values[0][0] as Uint8Array).buffer);
 
         return {
             lat: latlng.getFloat32(0, true),
