@@ -7,13 +7,35 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@googlemaps/js-api-loader':
+        specifier: ^1.16.8
+        version: 1.16.8
+      leaflet:
+        specifier: ^1.9.4
+        version: 1.9.4
+      leaflet.geodesic:
+        specifier: ^2.7.1
+        version: 2.7.1(leaflet@1.9.4)
+      sql.js:
+        specifier: ^1.12.0
+        version: 1.12.0
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.0.3
-        version: 5.0.3(svelte@5.16.3)(vite@6.0.7)
+        version: 5.0.3(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5))
       '@tsconfig/svelte':
         specifier: ^5.0.4
         version: 5.0.4
+      '@types/google.maps':
+        specifier: ^3.58.1
+        version: 3.58.1
+      '@types/leaflet':
+        specifier: ^1.9.15
+        version: 1.9.15
+      '@types/sql.js':
+        specifier: ^1.4.9
+        version: 1.4.9
       svelte:
         specifier: ^5.15.0
         version: 5.16.3
@@ -25,7 +47,13 @@ importers:
         version: 5.6.3
       vite:
         specifier: ^6.0.5
-        version: 6.0.7
+        version: 6.0.7(@types/node@22.10.5)
+      vite-plugin-top-level-await:
+        specifier: ^1.4.4
+        version: 1.4.4(rollup@4.30.0)(vite@6.0.7(@types/node@22.10.5))
+      vite-plugin-wasm:
+        specifier: ^3.4.1
+        version: 3.4.1(vite@6.0.7(@types/node@22.10.5))
 
 packages:
 
@@ -183,6 +211,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@googlemaps/js-api-loader@1.16.8':
+    resolution: {integrity: sha512-CROqqwfKotdO6EBjZO/gQGVTbeDps5V7Mt9+8+5Q+jTg5CRMi3Ii/L9PmV3USROrt2uWxtGzJHORmByxyo9pSQ==}
+
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
     engines: {node: '>=6.0.0'}
@@ -200,6 +231,15 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@rollup/plugin-virtual@3.0.2':
+    resolution: {integrity: sha512-10monEYsBp3scM4/ND4LNH5Rxvh3e/cVeL3jWTgZ2SrQ+BmUoQcopVQvnaMcOnykb1VkxUFuDAN+0FnpTFRy2A==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
+    peerDependenciesMeta:
+      rollup:
+        optional: true
 
   '@rollup/rollup-android-arm-eabi@4.30.0':
     resolution: {integrity: sha512-qFcFto9figFLz2g25DxJ1WWL9+c91fTxnGuwhToCl8BaqDsDYMl/kOnBXAyAqkkzAWimYMSWNPWEjt+ADAHuoQ==}
@@ -311,11 +351,104 @@ packages:
       svelte: ^5.0.0
       vite: ^6.0.0
 
+  '@swc/core-darwin-arm64@1.10.4':
+    resolution: {integrity: sha512-sV/eurLhkjn/197y48bxKP19oqcLydSel42Qsy2zepBltqUx+/zZ8+/IS0Bi7kaWVFxerbW1IPB09uq8Zuvm3g==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@swc/core-darwin-x64@1.10.4':
+    resolution: {integrity: sha512-gjYNU6vrAUO4+FuovEo9ofnVosTFXkF0VDuo1MKPItz6e2pxc2ale4FGzLw0Nf7JB1sX4a8h06CN16/pLJ8Q2w==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@swc/core-linux-arm-gnueabihf@1.10.4':
+    resolution: {integrity: sha512-zd7fXH5w8s+Sfvn2oO464KDWl+ZX1MJiVmE4Pdk46N3PEaNwE0koTfgx2vQRqRG4vBBobzVvzICC3618WcefOA==}
+    engines: {node: '>=10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@swc/core-linux-arm64-gnu@1.10.4':
+    resolution: {integrity: sha512-+UGfoHDxsMZgFD3tABKLeEZHqLNOkxStu+qCG7atGBhS4Slri6h6zijVvf4yI5X3kbXdvc44XV/hrP/Klnui2A==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/core-linux-arm64-musl@1.10.4':
+    resolution: {integrity: sha512-cDDj2/uYsOH0pgAnDkovLZvKJpFmBMyXkxEG6Q4yw99HbzO6QzZ5HDGWGWVq/6dLgYKlnnmpjZCPPQIu01mXEg==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@swc/core-linux-x64-gnu@1.10.4':
+    resolution: {integrity: sha512-qJXh9D6Kf5xSdGWPINpLGixAbB5JX8JcbEJpRamhlDBoOcQC79dYfOMEIxWPhTS1DGLyFakAx2FX/b2VmQmj0g==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/core-linux-x64-musl@1.10.4':
+    resolution: {integrity: sha512-A76lIAeyQnHCVt0RL/pG+0er8Qk9+acGJqSZOZm67Ve3B0oqMd871kPtaHBM0BW3OZAhoILgfHW3Op9Q3mx3Cw==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [linux]
+
+  '@swc/core-win32-arm64-msvc@1.10.4':
+    resolution: {integrity: sha512-e6j5kBu4fIY7fFxFxnZI0MlEovRvp50Lg59Fw+DVbtqHk3C85dckcy5xKP+UoXeuEmFceauQDczUcGs19SRGSQ==}
+    engines: {node: '>=10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@swc/core-win32-ia32-msvc@1.10.4':
+    resolution: {integrity: sha512-RSYHfdKgNXV/amY5Tqk1EWVsyQnhlsM//jeqMLw5Fy9rfxP592W9UTumNikNRPdjI8wKKzNMXDb1U29tQjN0dg==}
+    engines: {node: '>=10'}
+    cpu: [ia32]
+    os: [win32]
+
+  '@swc/core-win32-x64-msvc@1.10.4':
+    resolution: {integrity: sha512-1ujYpaqfqNPYdwKBlvJnOqcl+Syn3UrQ4XE0Txz6zMYgyh6cdU6a3pxqLqIUSJ12MtXRA9ZUhEz1ekU3LfLWXw==}
+    engines: {node: '>=10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@swc/core@1.10.4':
+    resolution: {integrity: sha512-ut3zfiTLORMxhr6y/GBxkHmzcGuVpwJYX4qyXWuBKkpw/0g0S5iO1/wW7RnLnZbAi8wS/n0atRZoaZlXWBkeJg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      '@swc/helpers': '*'
+    peerDependenciesMeta:
+      '@swc/helpers':
+        optional: true
+
+  '@swc/counter@0.1.3':
+    resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
+
+  '@swc/types@0.1.17':
+    resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
+
   '@tsconfig/svelte@5.0.4':
     resolution: {integrity: sha512-BV9NplVgLmSi4mwKzD8BD/NQ8erOY/nUE/GpgWe2ckx+wIQF5RyRirn/QsSSCPeulVpc3RA/iJt6DpfTIZps0Q==}
 
+  '@types/emscripten@1.39.13':
+    resolution: {integrity: sha512-cFq+fO/isvhvmuP/+Sl4K4jtU6E23DoivtbO4r50e3odaxAiVdbfSYRDdJ4gCdxx+3aRjhphS5ZMwIH4hFy/Cw==}
+
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
+
+  '@types/geojson@7946.0.15':
+    resolution: {integrity: sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA==}
+
+  '@types/google.maps@3.58.1':
+    resolution: {integrity: sha512-X9QTSvGJ0nCfMzYOnaVs/k6/4L+7F5uCS+4iUmkLEls6J9S/Phv+m/i3mDeyc49ZBgwab3EFO1HEoBY7k98EGQ==}
+
+  '@types/leaflet@1.9.15':
+    resolution: {integrity: sha512-7UuggAuAs+mva66gtf2OTB1nEhzU/9JED93TIaOEgvFMvG/dIGQaukHE7izHo1Zd+Ko1L4ETUw7TBc8yUxevpg==}
+
+  '@types/node@22.10.5':
+    resolution: {integrity: sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==}
+
+  '@types/sql.js@1.4.9':
+    resolution: {integrity: sha512-ep8b36RKHlgWPqjNG9ToUrPiwkhwh0AEzy883mO5Xnd+cL6VBH1EvSjBAAuxLUFF2Vn/moE3Me6v9E1Lo+48GQ==}
 
   acorn-typescript@1.4.13:
     resolution: {integrity: sha512-xsc9Xv0xlVfwp2o7sQ+GCQ1PgbkdcpWdTzrwXxO3xDMTAywVS3oXVOcOHuRjAPkS4P9b+yc/qNF15460v+jp4Q==}
@@ -387,6 +520,14 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
+  leaflet.geodesic@2.7.1:
+    resolution: {integrity: sha512-28mjn13lv0Iv4xnojqLh1wVSFaGZy8DzKQyu66a/3uQkyRB5fVuGZwlDzJJygwI0DEMyLVzLeJUOPd95H3OFrA==}
+    peerDependencies:
+      leaflet: ^1.9.4
+
+  leaflet@1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
+
   locate-character@3.0.0:
     resolution: {integrity: sha512-SW13ws7BjaeJ6p7Q6CO2nchbYEc3X3J6WrmTTDto7yMPqVSZTUyY5Tjbid+Ab8gLnATtygYtiDIJGQRRn2ZOiA==}
 
@@ -429,6 +570,9 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
+  sql.js@1.12.0:
+    resolution: {integrity: sha512-Bi+43yMx/tUFZVYD4AUscmdL6NHn3gYQ+CM+YheFWLftOmrEC/Mz6Yh7E96Y2WDHYz3COSqT+LP6Z79zgrwJlA==}
+
   svelte-check@4.1.1:
     resolution: {integrity: sha512-NfaX+6Qtc8W/CyVGS/F7/XdiSSyXz+WGYA9ZWV3z8tso14V2vzjfXviKaTFEzB7g8TqfgO2FOzP6XT4ApSTUTw==}
     engines: {node: '>= 18.0.0'}
@@ -445,6 +589,23 @@ packages:
     resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
+  uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
+
+  vite-plugin-top-level-await@1.4.4:
+    resolution: {integrity: sha512-QyxQbvcMkgt+kDb12m2P8Ed35Sp6nXP+l8ptGrnHV9zgYDUpraO0CPdlqLSeBqvY2DToR52nutDG7mIHuysdiw==}
+    peerDependencies:
+      vite: '>=2.8'
+
+  vite-plugin-wasm@3.4.1:
+    resolution: {integrity: sha512-ja3nSo2UCkVeitltJGkS3pfQHAanHv/DqGatdI39ja6McgABlpsZ5hVgl6wuR8Qx5etY3T5qgDQhOWzc5RReZA==}
+    peerDependencies:
+      vite: ^2 || ^3 || ^4 || ^5 || ^6
 
   vite@6.0.7:
     resolution: {integrity: sha512-RDt8r/7qx9940f8FcOIAH9PTViRrghKaK2K1jY3RaAURrEUbm9Du1mJ72G+jlhtG3WwodnfzY8ORQZbBavZEAQ==}
@@ -579,6 +740,8 @@ snapshots:
   '@esbuild/win32-x64@0.24.2':
     optional: true
 
+  '@googlemaps/js-api-loader@1.16.8': {}
+
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
       '@jridgewell/set-array': 1.2.1
@@ -595,6 +758,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@rollup/plugin-virtual@3.0.2(rollup@4.30.0)':
+    optionalDependencies:
+      rollup: 4.30.0
 
   '@rollup/rollup-android-arm-eabi@4.30.0':
     optional: true
@@ -653,31 +820,102 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.30.0':
     optional: true
 
-  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7))(svelte@5.16.3)(vite@6.0.7)':
+  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5)))(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.16.3)(vite@6.0.7)
+      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5))
       debug: 4.4.0
       svelte: 5.16.3
-      vite: 6.0.7
+      vite: 6.0.7(@types/node@22.10.5)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7)':
+  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7))(svelte@5.16.3)(vite@6.0.7)
+      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5)))(svelte@5.16.3)(vite@6.0.7(@types/node@22.10.5))
       debug: 4.4.0
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.17
       svelte: 5.16.3
-      vite: 6.0.7
-      vitefu: 1.0.5(vite@6.0.7)
+      vite: 6.0.7(@types/node@22.10.5)
+      vitefu: 1.0.5(vite@6.0.7(@types/node@22.10.5))
     transitivePeerDependencies:
       - supports-color
 
+  '@swc/core-darwin-arm64@1.10.4':
+    optional: true
+
+  '@swc/core-darwin-x64@1.10.4':
+    optional: true
+
+  '@swc/core-linux-arm-gnueabihf@1.10.4':
+    optional: true
+
+  '@swc/core-linux-arm64-gnu@1.10.4':
+    optional: true
+
+  '@swc/core-linux-arm64-musl@1.10.4':
+    optional: true
+
+  '@swc/core-linux-x64-gnu@1.10.4':
+    optional: true
+
+  '@swc/core-linux-x64-musl@1.10.4':
+    optional: true
+
+  '@swc/core-win32-arm64-msvc@1.10.4':
+    optional: true
+
+  '@swc/core-win32-ia32-msvc@1.10.4':
+    optional: true
+
+  '@swc/core-win32-x64-msvc@1.10.4':
+    optional: true
+
+  '@swc/core@1.10.4':
+    dependencies:
+      '@swc/counter': 0.1.3
+      '@swc/types': 0.1.17
+    optionalDependencies:
+      '@swc/core-darwin-arm64': 1.10.4
+      '@swc/core-darwin-x64': 1.10.4
+      '@swc/core-linux-arm-gnueabihf': 1.10.4
+      '@swc/core-linux-arm64-gnu': 1.10.4
+      '@swc/core-linux-arm64-musl': 1.10.4
+      '@swc/core-linux-x64-gnu': 1.10.4
+      '@swc/core-linux-x64-musl': 1.10.4
+      '@swc/core-win32-arm64-msvc': 1.10.4
+      '@swc/core-win32-ia32-msvc': 1.10.4
+      '@swc/core-win32-x64-msvc': 1.10.4
+
+  '@swc/counter@0.1.3': {}
+
+  '@swc/types@0.1.17':
+    dependencies:
+      '@swc/counter': 0.1.3
+
   '@tsconfig/svelte@5.0.4': {}
 
+  '@types/emscripten@1.39.13': {}
+
   '@types/estree@1.0.6': {}
+
+  '@types/geojson@7946.0.15': {}
+
+  '@types/google.maps@3.58.1': {}
+
+  '@types/leaflet@1.9.15':
+    dependencies:
+      '@types/geojson': 7946.0.15
+
+  '@types/node@22.10.5':
+    dependencies:
+      undici-types: 6.20.0
+
+  '@types/sql.js@1.4.9':
+    dependencies:
+      '@types/emscripten': 1.39.13
+      '@types/node': 22.10.5
 
   acorn-typescript@1.4.13(acorn@8.14.0):
     dependencies:
@@ -746,6 +984,12 @@ snapshots:
 
   kleur@4.1.5: {}
 
+  leaflet.geodesic@2.7.1(leaflet@1.9.4):
+    dependencies:
+      leaflet: 1.9.4
+
+  leaflet@1.9.4: {}
+
   locate-character@3.0.0: {}
 
   magic-string@0.30.17:
@@ -799,6 +1043,8 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
+  sql.js@1.12.0: {}
+
   svelte-check@4.1.1(svelte@5.16.3)(typescript@5.6.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
@@ -830,16 +1076,35 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  vite@6.0.7:
+  undici-types@6.20.0: {}
+
+  uuid@10.0.0: {}
+
+  vite-plugin-top-level-await@1.4.4(rollup@4.30.0)(vite@6.0.7(@types/node@22.10.5)):
+    dependencies:
+      '@rollup/plugin-virtual': 3.0.2(rollup@4.30.0)
+      '@swc/core': 1.10.4
+      uuid: 10.0.0
+      vite: 6.0.7(@types/node@22.10.5)
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - rollup
+
+  vite-plugin-wasm@3.4.1(vite@6.0.7(@types/node@22.10.5)):
+    dependencies:
+      vite: 6.0.7(@types/node@22.10.5)
+
+  vite@6.0.7(@types/node@22.10.5):
     dependencies:
       esbuild: 0.24.2
       postcss: 8.4.49
       rollup: 4.30.0
     optionalDependencies:
+      '@types/node': 22.10.5
       fsevents: 2.3.3
 
-  vitefu@1.0.5(vite@6.0.7):
+  vitefu@1.0.5(vite@6.0.7(@types/node@22.10.5)):
     optionalDependencies:
-      vite: 6.0.7
+      vite: 6.0.7(@types/node@22.10.5)
 
   zimmerframe@1.1.2: {}
