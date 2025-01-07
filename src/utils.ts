@@ -1,4 +1,5 @@
 import wasm from "sql.js/dist/sql-wasm.wasm?url";
+import dbUrl from "/locations.sqlite?url";
 import * as initSqlJs from "sql.js/dist/sql-wasm";
 
 import type { SqlValue } from "sql.js";
@@ -10,7 +11,7 @@ export type LatLng = { lat: number; lng: number };
 export const loadDatabase = async (): Promise<GetRandomLocation> => {
     const sql = await initSqlJs.default({ locateFile: () => wasm });
 
-    const dbBytes = await fetch("/locations.sqlite")
+    const dbBytes = await fetch(dbUrl)
         .then((r) => r.blob())
         .then((b) => b.arrayBuffer());
 

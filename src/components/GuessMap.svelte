@@ -1,9 +1,17 @@
 <script lang="ts">
+    import markerIconUrl from "leaflet/dist/images/marker-icon.png";
+    import markerIconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
+    import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
+
     import "leaflet/dist/leaflet.css";
-    // import "leaflet";
     import * as leaflet from "leaflet";
     import type { LatLng } from "../utils";
     import * as L from "leaflet.geodesic";
+
+    leaflet.Icon.Default.prototype.options.iconUrl = markerIconUrl;
+    leaflet.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
+    leaflet.Icon.Default.prototype.options.shadowUrl = markerShadowUrl;
+    leaflet.Icon.Default.imagePath = "";
 
     let {
         query = $bindable(),
@@ -91,7 +99,9 @@
 
 <div style="width: 50%; position: relative;">
     {#if !query}
-        <div style="position: absolute; z-index: 999; margin: 1rem 0 0 1rem; background: white; padding: 0.5rem">
+        <div
+            style="position: absolute; z-index: 999; margin: 1rem 0 0 1rem; background: white; padding: 0.5rem"
+        >
             <i>click to make a guess</i>
         </div>
     {/if}
