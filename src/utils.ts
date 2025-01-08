@@ -2,8 +2,6 @@ import wasm from "sql.js/dist/sql-wasm.wasm?url";
 import dbUrl from "/locations.sqlite?url";
 import * as initSqlJs from "sql.js/dist/sql-wasm";
 
-import type { SqlValue } from "sql.js";
-
 export type GetRandomLocation = (countryCode: string | null) => LatLng;
 export type LatLng = { lat: number; lng: number };
 

@@ -36,4 +36,4 @@
     });
 </script>
 
-<div id="view" style="width: 50%; height: 500px;"></div>
+<div id="view" class="w-full h-full"></div>

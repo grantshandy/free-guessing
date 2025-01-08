@@ -1,5 +1,5 @@
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     fs::{self, File},
     path::PathBuf,
 };
@@ -11,15 +11,20 @@ use parquet::{
 };
 use rusqlite::Connection;
 
+const PARQUET_DIR: &str = "../data/";
+const LOCATIONS_DB: &str = "../public/locations.sqlite";
+const COUNTRIES_JSON: &str = "../src/countries.json";
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let boundaries = CountryBoundaries::from_reader(BOUNDARIES_ODBL_360X180)?;
 
-    let files = fs::read_dir("../data/")?
+    let pq_files = fs::read_dir(PARQUET_DIR)?
         .filter_map(|d| d.ok())
         .map(|f| f.path())
         .filter(|p| p.is_file());
 
-    let sql_db = Connection::open("../public/locations.sqlite")?;
+    let _ = fs::remove_file(LOCATIONS_DB);
+    let sql_db = Connection::open(LOCATIONS_DB)?;
 
     let mut countries = HashSet::new();
 
@@ -35,15 +40,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         );",
     )?;
 
-    for file in files {
+    for file in pq_files {
+        println!("processing {file:?}");
         insert_parquet(&boundaries, &mut countries, file, &sql_db)?;
     }
 
     sql_db.cache_flush()?;
 
+    write_countries(countries)?;
+
+    Ok(())
+}
+
+fn write_countries(needed: HashSet<String>) -> Result<(), Box<dyn std::error::Error>> {
+    let all_countries: serde_json::Value =
+        serde_json::from_str(include_str!("all_countries.json"))?;
+
     fs::write(
-        "../src/countries.json",
-        serde_json::to_string_pretty(&serde_json::json!({ "codes": countries }))?,
+        COUNTRIES_JSON,
+        serde_json::to_vec_pretty::<HashMap<String, Vec<f64>>>(&HashMap::from_iter(
+            needed.into_iter().map(|d| {
+                (
+                    d.clone(),
+                    all_countries[d][1]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|v| v.as_f64().unwrap())
+                        .collect::<Vec<f64>>(),
+                )
+            }),
+        ))?,
     )?;
 
     Ok(())
@@ -53,7 +80,7 @@ fn insert_parquet(
     boundaries: &CountryBoundaries,
     countries: &mut HashSet<String>,
     pq_file: PathBuf,
-    conn: &Connection,
+    sql_db: &Connection,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let reader = SerializedFileReader::new(File::open(pq_file)?)?;
     for row in reader.get_row_iter(None)? {
@@ -72,18 +99,18 @@ fn insert_parquet(
 
         countries.insert(country_code.to_string());
 
-        let country_id: usize = conn
+        let country_id: usize = sql_db
             .query_row(
                 "SELECT country_id FROM country_codes WHERE country_code = ?1",
                 rusqlite::params![country_code],
                 |row| row.get(0),
             )
             .or_else(|_| {
-                conn.execute(
+                sql_db.execute(
                     "INSERT INTO country_codes (country_code) VALUES (?1)",
                     rusqlite::params![country_code],
                 )?;
-                conn.query_row(
+                sql_db.query_row(
                     "SELECT country_id FROM country_codes WHERE country_code = ?1",
                     rusqlite::params![country_code],
                     |row| row.get(0),
@@ -92,7 +119,7 @@ fn insert_parquet(
 
         let latlng = [latitude.to_le_bytes(), longitude.to_le_bytes()].concat();
 
-        conn.execute(
+        sql_db.execute(
             "INSERT INTO locations (latlng, country_id) VALUES (?1, ?2)",
             rusqlite::params![latlng, country_id],
         )?;

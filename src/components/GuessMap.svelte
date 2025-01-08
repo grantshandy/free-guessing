@@ -2,42 +2,59 @@
     import markerIconUrl from "leaflet/dist/images/marker-icon.png";
     import markerIconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
     import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
+    leaflet.Icon.Default.prototype.options.iconUrl = markerIconUrl;
+    leaflet.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
+    leaflet.Icon.Default.prototype.options.shadowUrl = markerShadowUrl;
+    leaflet.Icon.Default.imagePath = "";
 
     import "leaflet/dist/leaflet.css";
     import * as leaflet from "leaflet";
     import type { LatLng } from "../utils";
     import * as L from "leaflet.geodesic";
 
-    leaflet.Icon.Default.prototype.options.iconUrl = markerIconUrl;
-    leaflet.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
-    leaflet.Icon.Default.prototype.options.shadowUrl = markerShadowUrl;
-    leaflet.Icon.Default.imagePath = "";
+    import boundingBoxes from "../countries.json";
+    type BoundingBoxes = typeof boundingBoxes;
+    type CountryKey = keyof BoundingBoxes;
 
     let {
         query = $bindable(),
         result,
         showResult,
+        countryCode,
     }: {
         query: LatLng | null;
         result: LatLng | null;
         showResult: boolean;
+        countryCode: string | null;
     } = $props();
 
-    const setDefaultView = () => map?.setView([27, 4], 2);
+    const setWorldwideView = () => map?.setView([27, 4], 2);
 
     let map: leaflet.Map | null = $state(null);
     let resultLine: L.GeodesicLine | null = null;
 
     $effect(() => {
         if (!showResult) {
-            setDefaultView();
+            if (countryCode && countryCode in boundingBoxes) {
+                const bounds = boundingBoxes[countryCode as CountryKey];
+
+                map?.flyToBounds(
+                    [
+                        [bounds[1], bounds[0]],
+                        [bounds[3], bounds[2]],
+                    ],
+                    { padding: [10, 10] },
+                );
+            } else {
+                setWorldwideView();
+            }
         } else if (showResult && query && result) {
             map?.flyToBounds(
                 [
                     [query.lat, query.lng],
                     [result.lat, result.lng],
                 ],
-                { padding: [10, 10] },
+                { padding: [20, 20] },
             );
         }
     });
@@ -69,7 +86,7 @@
             minZoom: 2,
             zoomControl: false,
         });
-        setDefaultView();
+        setWorldwideView();
         map.setMaxBounds(new leaflet.LatLngBounds([-150, -300], [150, 400]));
         leaflet
             .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -97,13 +114,17 @@
 
 <svelte:window on:resize={() => map?.invalidateSize()} />
 
-<div style="width: 50%; position: relative;">
+<div class="w-full h-full relative">
     {#if !query}
-        <div
-            style="position: absolute; z-index: 999; margin: 1rem 0 0 1rem; background: white; padding: 0.5rem"
+        <p
+            class="absolute z-[999] ml-1 mt-1 bg-base-200 py-0.5 px-2 italic rounded-md shadow-md"
         >
-            <i>click to make a guess</i>
-        </div>
+            click to make a guess
+        </p>
     {/if}
-    <div use:mapAction style="width: 100%; height: 100%;"></div>
+    <div
+        use:mapAction
+        class="w-full h-full"
+        style="cursor: pointer !important;"
+    ></div>
 </div>

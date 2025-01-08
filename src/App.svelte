@@ -43,8 +43,8 @@
   };
 </script>
 
-<main>
-  <h2>Free Guessing</h2>
+<main class="space-y-3 p-3">
+  <h1 class="text-2xl font-semibold">Free Guessing</h1>
 
   <p>
     Guess the location of random street views across the world, inspired by <a
@@ -53,39 +53,42 @@
   </p>
 
   {#if loading}
-    <h3>Loading Database...</h3>
+    <h2>Loading Database...</h2>
   {:else}
-    <hr />
-    <div>
-      <CountrySelector bind:countryCode />
-      <button onclick={newGuess}>Next Location</button>
+    <div class="flow-root">
+      <CountrySelector bind:countryCode onchange={newGuess} />
+      {#if !resultScreen}
+        <button class="btn btn-sm" onclick={newGuess}>Skip</button>
+      {/if}
 
-      <div style="float: right; display: flex;">
-        {#if !resultScreen && target}
-          <button disabled={!query || resultScreen} onclick={makeGuess}
-            >Guess</button
+      <div class="float-right flex items-center space-x-3">
+        {#if resultScreen}
+          <span>Score:</span>
+          <progress value={score} max="100" class="progress hidden md:flex w-64"
+          ></progress>
+          <span>{score?.toFixed(2)}%</span>
+          <button onclick={newGuess} class="btn btn-sm btn-primary"
+            >Next!</button
           >
-        {/if}
-
-        {#if resultScreen && score != null}
-          <progress value={score} max="100"></progress>
-          <span style="margin-left: 0.5rem;">{score.toFixed(2)}%</span>
-          <button style="margin-left: 1rem;" onclick={newGuess}>Next!</button>
+        {:else}
+          <button
+            disabled={!query}
+            onclick={makeGuess}
+            class="btn btn-sm btn-primary">Guess</button
+          >
         {/if}
       </div>
     </div>
-    <hr />
 
     {#if target}
-      <div style="display: flex;">
+      <div class="grid grid-cols-1 md:grid-cols-2 w-full h-[70vh] md:h-[60vh]">
         <StreetView coords={target} />
-        <GuessMap bind:query result={target} showResult={resultScreen} />
+        <GuessMap bind:query result={target} showResult={resultScreen} {countryCode} />
       </div>
-      <hr />
     {/if}
   {/if}
 
-  <p style="text-align: center;">
+  <p class="text-center">
     <a href="https://buymeacoffee.com/granthandy">Donate</a> &#183;
     <a href="https://github.com/grantshandy/free-guessing">Source</a>
   </p>
