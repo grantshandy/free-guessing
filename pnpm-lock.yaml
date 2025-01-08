@@ -11,9 +11,6 @@ importers:
       '@googlemaps/js-api-loader':
         specifier: ^1.16.8
         version: 1.16.8
-      '@trustedshops-public/js-iso3166-converter':
-        specifier: ^1.2.1
-        version: 1.2.1
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -464,9 +461,6 @@ packages:
 
   '@swc/types@0.1.17':
     resolution: {integrity: sha512-V5gRru+aD8YVyCOMAjMpWR1Ui577DD5KSJsHP8RAxopAH22jFz6GZd/qxqjO6MJHQhcsjvjOFXyDhyLQUnMveQ==}
-
-  '@trustedshops-public/js-iso3166-converter@1.2.1':
-    resolution: {integrity: sha512-DFBgS8s7fnSy9GuXgrWbutZcFINMYDFXAsm1rfG+KPwIUTem9MDH1hgTSKlkj9UK0EQtShV75y87o3tkUka+Og==}
 
   '@tsconfig/svelte@5.0.4':
     resolution: {integrity: sha512-BV9NplVgLmSi4mwKzD8BD/NQ8erOY/nUE/GpgWe2ckx+wIQF5RyRirn/QsSSCPeulVpc3RA/iJt6DpfTIZps0Q==}
@@ -1367,8 +1361,6 @@ snapshots:
   '@swc/types@0.1.17':
     dependencies:
       '@swc/counter': 0.1.3
-
-  '@trustedshops-public/js-iso3166-converter@1.2.1': {}
 
   '@tsconfig/svelte@5.0.4': {}
 
