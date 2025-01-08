@@ -56,22 +56,20 @@ fn write_countries(needed: HashSet<String>) -> Result<(), Box<dyn std::error::Er
     let all_countries: serde_json::Value =
         serde_json::from_str(include_str!("all_countries.json"))?;
 
-    fs::write(
-        COUNTRIES_JSON,
-        serde_json::to_vec_pretty::<HashMap<String, Vec<f64>>>(&HashMap::from_iter(
-            needed.into_iter().map(|d| {
-                (
-                    d.clone(),
-                    all_countries[d][1]
-                        .as_array()
-                        .unwrap()
-                        .iter()
-                        .map(|v| v.as_f64().unwrap())
-                        .collect::<Vec<f64>>(),
-                )
-            }),
-        ))?,
-    )?;
+    let used_countries: HashMap<String, Vec<f64>> =
+        HashMap::from_iter(needed.into_iter().map(|d| {
+            (
+                d.clone(),
+                all_countries[d][1]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .map(|v| v.as_f64().unwrap())
+                    .collect::<Vec<f64>>(),
+            )
+        }));
+
+    fs::write(COUNTRIES_JSON, serde_json::to_vec(&used_countries)?)?;
 
     Ok(())
 }

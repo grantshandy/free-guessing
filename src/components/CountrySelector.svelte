@@ -1,8 +1,9 @@
 <script lang="ts">
     import type { ChangeEventHandler } from "svelte/elements";
     import countries from "../countries.json";
+    import type { CountryCode } from "../utils";
 
-    let { countryCode = $bindable(), onchange }: { countryCode: string | null, onchange: ChangeEventHandler<HTMLSelectElement> } = $props();
+    let { countryCode = $bindable(), onchange }: { countryCode: CountryCode | null, onchange: ChangeEventHandler<HTMLSelectElement> } = $props();
 
     const regionNames = new Intl.DisplayNames( ['en'], {type: 'region'} );
 </script>

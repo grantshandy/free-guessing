@@ -1,9 +1,15 @@
 import wasm from "sql.js/dist/sql-wasm.wasm?url";
 import dbUrl from "/locations.sqlite?url";
 import * as initSqlJs from "sql.js/dist/sql-wasm";
+import countries from "./countries.json";
+import type { IconData } from "svelte-awesome/components/Icon.svelte";
+import { DivIcon, divIcon } from "leaflet";
 
 export type GetRandomLocation = (countryCode: string | null) => LatLng;
 export type LatLng = { lat: number; lng: number };
+
+export type CountryBoundingBoxes = typeof countries;
+export type CountryCode = keyof CountryBoundingBoxes;
 
 // Returns a function that can generate random google street view locations from the database
 export const loadDatabase = async (): Promise<GetRandomLocation> => {
@@ -38,31 +44,48 @@ export const loadDatabase = async (): Promise<GetRandomLocation> => {
     };
 }
 
+export const renderIcon = (icon: IconData): DivIcon => {
+    // @ts-ignore
+    const html = `<div class="p-1 rounded-full bg-primary fill-primary-content shadow-lg w-full h-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-full w-full" viewBox="0 0 ${icon.width} ${icon.height}">
+                        ${(icon.paths ?? []).map((path) => `<path d="${path.d}"/>`)}
+                    </svg>
+                </div>`;
+
+    const size = 25;
+
+    return divIcon({ html, className: "", iconSize: [size, size], shadowSize: [size, size] });
+}
+
 // Generates a score from 0 to 100 for your guess. Closer points, higher scores.
-export const calculateScore = (pointA: LatLng, pointB: LatLng, countryCode: string | null): number => {
-    const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+export const calculateScore = (pointA: LatLng, pointB: LatLng, countryCode: CountryCode | null): number => {
+    const dist = calculateDistanceKm(pointA, pointB);
+    let maxDistKm: number;
 
-    const lat1 = toRadians(pointA.lat);
-    const lng1 = toRadians(pointA.lng);
-    const lat2 = toRadians(pointB.lat);
-    const lng2 = toRadians(pointB.lng);
+    if (countryCode) {
+        const bounds = countries[countryCode];
+        maxDistKm = calculateDistanceKm({ lat: bounds[1], lng: bounds[0] }, { lat: bounds[3], lng: bounds[2] });
+    } else {
+        maxDistKm = 20_000;
+    }
 
-    const dLat = lat2 - lat1;
-    const dLng = lng2 - lng1;
-
-    // haversine (?) forumla.
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(lat1) * Math.cos(lat2) *
-        Math.sin(dLng / 2) * Math.sin(dLng / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const maxDistance = Math.PI; // Half the circumference of the sphere (in radians)
-
-    // 0-1 distance on the earth
-    const normalizedDistance = c / maxDistance;
-
-    // factor encouraging better scores (?)
-    const p = 4;
-
-    return 100 * Math.exp(-normalizedDistance);
+    // TODO: tweak?
+    const factor = (maxDistKm * maxDistKm) / 20_000 + 50;
+    return 100 * Math.exp(-dist / factor);
 };
+
+const calculateDistanceKm = (pointA: LatLng, pointB: LatLng): number => {
+    const deg2rad = (deg: number) => deg * (Math.PI / 180);
+
+    var dLat = deg2rad(pointB.lat - pointA.lat);
+    var dLng = deg2rad(pointB.lng - pointA.lng);
+
+    var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(pointA.lat)) * Math.cos(deg2rad(pointB.lat)) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2)
+        ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return 6371 * c; // * radius of the earth in km
+}
