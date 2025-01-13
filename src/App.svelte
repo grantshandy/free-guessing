@@ -28,9 +28,7 @@
   let resultScreen: boolean = $state(false);
 
   let score: number | null = $derived(
-    resultScreen && query && target
-      ? calculateScore(query, target, countryCode)
-      : null,
+    query && target ? calculateScore(query, target, countryCode) : null,
   );
 
   $effect(() => {
@@ -113,7 +111,7 @@
   <div
     class="modal-box rounded-box overflow-visible relative flex flex-col w-full mx-4 h-[70vh] border border-neutral-content p-0"
   >
-    {#if resultScreen && score}
+    {#if resultScreen && score != null}
       <span
         transition:fade={{ duration: 400 }}
         class="absolute top-0 right-0 rounded-l-full sm:rounded-r-full shadow-lg py-2 px-4 bg-base-200 font-semibold border text-lg z-[999] translate sm:translate-x-1/4 -translate-y-1/3"

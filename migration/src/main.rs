@@ -52,28 +52,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn write_countries(needed: HashSet<String>) -> Result<(), Box<dyn std::error::Error>> {
-    let all_countries: serde_json::Value =
-        serde_json::from_str(include_str!("all_countries.json"))?;
-
-    let used_countries: HashMap<String, Vec<f64>> =
-        HashMap::from_iter(needed.into_iter().map(|d| {
-            (
-                d.clone(),
-                all_countries[d][1]
-                    .as_array()
-                    .unwrap()
-                    .iter()
-                    .map(|v| v.as_f64().unwrap())
-                    .collect::<Vec<f64>>(),
-            )
-        }));
-
-    fs::write(COUNTRIES_JSON, serde_json::to_vec(&used_countries)?)?;
-
-    Ok(())
-}
-
 fn insert_parquet(
     boundaries: &CountryBoundaries,
     countries: &mut HashSet<String>,
@@ -122,6 +100,33 @@ fn insert_parquet(
             rusqlite::params![latlng, country_id],
         )?;
     }
+
+    Ok(())
+}
+
+fn write_countries(needed: HashSet<String>) -> Result<(), Box<dyn std::error::Error>> {
+    let all_countries: serde_json::Value =
+        serde_json::from_str(include_str!("all_countries.json"))?;
+
+    let used_countries: HashMap<String, serde_json::Value> =
+        HashMap::from_iter(needed.into_iter().map(|d| {
+            let bounds = all_countries[&d][1]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|v| v.as_f64().unwrap())
+                .collect::<Vec<f64>>();
+
+            (
+                d,
+                serde_json::json!({
+                    "min": { "lat": bounds[1], "lng": bounds[0] },
+                    "max": { "lat": bounds[3], "lng": bounds[2] }
+                }),
+            )
+        }));
+
+    fs::write(COUNTRIES_JSON, serde_json::to_vec(&used_countries)?)?;
 
     Ok(())
 }

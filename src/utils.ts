@@ -57,21 +57,34 @@ export const renderIcon = (icon: IconData): DivIcon => {
     return divIcon({ html, className: "", iconSize: [size, size], shadowSize: [size, size] });
 }
 
-// Generates a score from 0 to 100 for your guess. Closer points, higher scores.
-export const calculateScore = (pointA: LatLng, pointB: LatLng, countryCode: CountryCode | null): number => {
-    const dist = calculateDistanceKm(pointA, pointB);
-    let maxDistKm: number;
+// Generates a score from 0 to 1 score for your guess. Closer distance, higher score.
+export const calculateScore = (guess: LatLng, target: LatLng, countryCode: CountryCode | null): number => {
+    const dist = calculateDistanceKm(guess, target);
+
+
+    let maxDist: number;
 
     if (countryCode) {
         const bounds = countries[countryCode];
-        maxDistKm = calculateDistanceKm({ lat: bounds[1], lng: bounds[0] }, { lat: bounds[3], lng: bounds[2] });
+
+        // score of 0 if out of bounds?
+        // if (pointA.lat < bounds[0].lat
+        //     || pointA.lng < bounds[0].lng
+        //     || pointA.lat > bounds[1].lat
+        //     || pointA.lng > bounds[1].lng) {
+        //     return 0;
+        // }
+
+        maxDist = calculateDistanceKm(bounds.min, bounds.max);
     } else {
-        maxDistKm = 20_000;
+        maxDist = 20_000;
     }
 
+    // const normalizedDist = dist / maxDist;
+
     // TODO: tweak?
-    const factor = (maxDistKm * maxDistKm) / 20_000 + 50;
-    return 100 * Math.exp(-dist / factor);
+    const factor = (maxDist * maxDist) / 20_000 + 50;
+    return Math.exp(-dist / factor);
 };
 
 const calculateDistanceKm = (pointA: LatLng, pointB: LatLng): number => {

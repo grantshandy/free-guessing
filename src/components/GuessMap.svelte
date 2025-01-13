@@ -43,8 +43,8 @@
 
                 map?.flyToBounds(
                     [
-                        [bounds[1], bounds[0]],
-                        [bounds[3], bounds[2]],
+                        [bounds.min.lat, bounds.min.lng],
+                        [bounds.max.lat, bounds.max.lng],
                     ],
                     { padding: [10, 10] },
                 );
@@ -76,16 +76,19 @@
         { icon: renderIcon(mapOIcon["map-o"]) },
     );
     $effect(() => {
+        resultLine?.remove();
+
         if (!map) return;
         if (query && result && showResult) {
             resultLine = new L.GeodesicLine([query, result], {
                 weight: 2,
                 steps: 10,
-                color: getComputedStyle(document.querySelector('.btn-primary') as Element).backgroundColor,
+                color: getComputedStyle(
+                    document.querySelector(".btn-primary") as Element,
+                ).backgroundColor,
             }).addTo(map);
             targetMarker.setLatLng(result).addTo(map);
         } else {
-            resultLine?.remove();
             targetMarker.remove();
         }
     });
@@ -119,6 +122,19 @@
             destroy: () => map?.remove(),
         };
     };
+
+    // $effect(() => {
+    //     if (map && countryCode) {
+    //         const bounds = boundingBoxes[countryCode as CountryKey];
+
+    //         leaflet
+    //             .rectangle([
+    //                 [bounds.min.lat, bounds.min.lng],
+    //                 [bounds.max.lat, bounds.max.lng],
+    //             ])
+    //             .addTo(map);
+    //     }
+    // });
 </script>
 
 <svelte:window on:resize={() => map?.invalidateSize()} />
